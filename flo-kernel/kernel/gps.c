@@ -35,7 +35,7 @@ SYSCALL_DEFINE1(set_gps_location, struct gps_location __user *, loc)
 			(int) k_loc->longitude,
 			(int) k_loc->accuracy);
 */
-	return 378;
+	return 0;
 }
 
 
@@ -97,5 +97,5 @@ SYSCALL_DEFINE2(get_gps_location,
 	   (int) k_loc->longitude,
 	   (int) k_loc->accuracy);
 	 */
-	return 379;
+	return 0;
 }
