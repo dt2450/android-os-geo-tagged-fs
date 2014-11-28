@@ -4,7 +4,8 @@
 struct gps_location {
 	double latitude;
 	double longitude;
-	float  accuracy;  /* in meters */
+	//float  accuracy;  /* in meters */
+	double  accuracy;  /* in meters */
 };
 
 #endif /* __GPS_H */
