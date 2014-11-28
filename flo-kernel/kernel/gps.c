@@ -11,6 +11,22 @@
 SYSCALL_DEFINE1(set_gps_location, struct gps_location __user *, loc)
 {
 	struct gps_location *k_loc = NULL;
+	int uid;
+
+	read_lock(&tasklist_lock);
+	if (current == NULL || current->real_cred == NULL) {
+		pr_err("set_gps_location: current task is invalid\n");
+		read_unlock(&tasklist_lock);
+		return -EFAULT;
+	}
+
+	uid = current->real_cred->uid;
+	read_unlock(&tasklist_lock);
+
+	if (uid != 0) {
+		pr_err("set_gps_location: called by non-root user !!\n");
+		return -EACCES;
+	}
 
 	if (loc == NULL) {
 		pr_err("set_gps_location: loc is NULL.\n");
