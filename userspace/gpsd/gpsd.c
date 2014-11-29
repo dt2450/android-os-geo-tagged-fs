@@ -14,7 +14,9 @@ struct gps_location *get_file_data()
 {
 	struct gps_location *loc = NULL;
 	FILE* f = NULL;
-	char line[128];
+	char *line = NULL;
+	ssize_t r;
+	size_t len = 0;
 	int line_num = 0;
 	double lat = -1, lon = -1;
 	float acc = -1;
@@ -33,7 +35,8 @@ struct gps_location *get_file_data()
 		return NULL;
 	}
 
-	while (fgets(line, sizeof(line), f) != NULL) {
+	while ((r = getline(&line, &len, f)) != -1) {
+	//	printf("Line %d: %s", line_num, line);
 		switch (line_num) {
 		case 0:	lat = strtod(line, NULL);
 			break;
