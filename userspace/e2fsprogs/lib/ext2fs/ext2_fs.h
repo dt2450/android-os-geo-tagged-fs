@@ -59,7 +59,8 @@
 /*
  * The second extended file system magic number
  */
-#define EXT3_SUPER_MAGIC	0xEF53
+//TODO: change this code?
+#define EXT3_SUPER_MAGIC	0xEF54
 #define EXT2_SUPER_MAGIC	EXT3_SUPER_MAGIC
 
 #ifdef __KERNEL__
@@ -374,7 +375,13 @@ struct ext4_new_group_input {
 /*
  * Structure of an inode on the disk
  */
+
+//TODO: add new fields here?
 struct ext2_inode {
+	__u64	i_latitude;	/* File latitude */
+	__u64	i_longitude;	/* File longitude */
+	__u32	i_accuracy;	/* File location accuracy */
+	__u32	i_coord_age;	/* File location age */
 	__u16	i_mode;		/* File mode */
 	__u16	i_uid;		/* Low 16 bits of Owner Uid */
 	__u32	i_size;		/* Size in bytes */
@@ -423,7 +430,12 @@ struct ext2_inode {
 /*
  * Permanent part of an large inode on the disk
  */
+//TODO: add new fields here?
 struct ext2_inode_large {
+	__u64	i_latitude;	/* File latitude */
+	__u64	i_longitude;	/* File longitude */
+	__u32	i_accuracy;	/* File location accuracy */
+	__u32	i_coord_age;	/* File location age */
 	__u16	i_mode;		/* File mode */
 	__u16	i_uid;		/* Low 16 bits of Owner Uid */
 	__u32	i_size;		/* Size in bytes */
