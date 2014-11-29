@@ -107,11 +107,9 @@ SYSCALL_DEFINE2(get_gps_location,
 			k_path, path_len);
 
 
-	/*
-	   pr_err("set_gps_location: lat: %d, long: %d, acc: %d\n",
-	   (int) k_loc->latitude,
-	   (int) k_loc->longitude,
-	   (int) k_loc->accuracy);
-	 */
+	pr_err("set_gps_location: lat: %x, long: %x, acc: %x\n",
+			k_loc->latitude,
+			k_loc->longitude,
+			k_loc->accuracy);
 	return 0;
 }
