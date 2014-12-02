@@ -55,7 +55,11 @@ struct inodes_stat_t {
 	int dummy[5];		/* padding for sysctl ABI compatibility */
 };
 
-
+struct gps_location {
+	double latitude;
+	double longitude;
+	float  accuracy;  /* in meters */
+};
 #define NR_FILE  8192	/* this can well be larger on a larger system */
 
 #define MAY_EXEC		0x00000001
@@ -1655,6 +1659,10 @@ struct inode_operations {
 	int (*mknod) (struct inode *,struct dentry *,umode_t,dev_t);
 	int (*rename) (struct inode *, struct dentry *,
 			struct inode *, struct dentry *);
+	
+	int (*set_gps_location)(struct inode *);
+	int (*get_gps_location)(struct inode *, struct gps_location *);
+
 	void (*truncate) (struct inode *);
 	int (*setattr) (struct dentry *, struct iattr *);
 	int (*getattr) (struct vfsmount *mnt, struct dentry *, struct kstat *);

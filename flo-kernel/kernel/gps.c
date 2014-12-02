@@ -67,10 +67,10 @@ SYSCALL_DEFINE1(set_gps_location, struct gps_location __user *, loc)
 	__k_loc->latitude = k_loc->latitude;
 	__k_loc->longitude = k_loc->longitude;
 	__k_loc->accuracy = k_loc->accuracy;
-	pr_err("GPS data: lat: %x, lon: %x, acc: %x\n",
+	/*pr_err("GPS data: lat: %x, lon: %x, acc: %x\n",
 			__k_loc->latitude,
 			__k_loc->longitude,
-			__k_loc->accuracy);
+			__k_loc->accuracy);*/
 
 	kfree(k_loc);
 /*
@@ -137,9 +137,9 @@ SYSCALL_DEFINE2(get_gps_location,
 			k_path, path_len);
 
 
-	pr_err("get_gps_location: lat: %x, long: %x, acc: %x\n",
+	/*pr_err("get_gps_location: lat: %x, long: %x, acc: %x\n",
 			k_loc->latitude,
 			k_loc->longitude,
-			k_loc->accuracy);
+			k_loc->accuracy);*/
 	return 0;
 }
