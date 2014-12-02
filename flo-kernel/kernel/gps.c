@@ -10,6 +10,12 @@
 
 static struct gps_location *__k_loc = NULL;
 
+struct gps_location *__get_gps_location()
+{
+	return __k_loc;
+}
+
+
 static int init_k_loc()
 {
 	if (__k_loc == NULL) {
