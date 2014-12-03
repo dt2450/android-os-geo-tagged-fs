@@ -8,8 +8,8 @@
 //	double  accuracy;  /* in meters */
 //};
 
-struct gps_location *__get_gps_location();
-
+struct gps_location *__get_gps_location(void);
+unsigned long long __get_timestamp(void);
 
 #endif /* __GPS_H */
 
