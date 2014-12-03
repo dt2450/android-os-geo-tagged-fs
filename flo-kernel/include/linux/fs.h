@@ -10,7 +10,6 @@
 #include <linux/ioctl.h>
 #include <linux/blk_types.h>
 #include <linux/types.h>
-#include <linux/gps.h>
 /*
  * It's silly to have NR_OPEN bigger than NR_FILE, but you can change
  * the file limit at runtime and only root can increase the per-process
@@ -852,6 +851,11 @@ struct inode {
 	atomic_t		i_readcount; /* struct files open RO */
 #endif
 	void			*i_private; /* fs or device private pointer */
+	__u64			i_latitude; /* File latitude */
+	__u64			i_longitude;/* File longitude */
+	__u32			i_accuracy; /* File location accuracy */
+	__u32			i_coord_age;/* File location age */
+
 };
 
 static inline int inode_unhashed(struct inode *inode)

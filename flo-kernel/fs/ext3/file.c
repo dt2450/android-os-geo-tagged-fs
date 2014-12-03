@@ -22,7 +22,7 @@
 #include "ext3.h"
 #include "xattr.h"
 #include "acl.h"
-
+#include "ext3_gps.h"
 /*
  * Called when an inode is released. Note that this is different
  * from ext3_file_open: open gets called at every open, but release
@@ -76,5 +76,7 @@ const struct inode_operations ext3_file_inode_operations = {
 #endif
 	.get_acl	= ext3_get_acl,
 	.fiemap		= ext3_fiemap,
+	.set_gps_location = ext3_set_gps_location,
+        .get_gps_location = ext3_get_gps_location,
 };
 
