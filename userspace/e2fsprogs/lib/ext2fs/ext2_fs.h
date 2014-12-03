@@ -378,10 +378,6 @@ struct ext4_new_group_input {
 
 //TODO: add new fields here?
 struct ext2_inode {
-	__u64	i_latitude;	/* File latitude */
-	__u64	i_longitude;	/* File longitude */
-	__u32	i_accuracy;	/* File location accuracy */
-	__u32	i_coord_age;	/* File location age */
 	__u16	i_mode;		/* File mode */
 	__u16	i_uid;		/* Low 16 bits of Owner Uid */
 	__u32	i_size;		/* Size in bytes */
@@ -424,6 +420,10 @@ struct ext2_inode {
 			__u32	h_i_author;
 		} hurd2;
 	} osd2;				/* OS dependent 2 */
+	__u64	i_latitude;	/* File latitude */
+	__u64	i_longitude;	/* File longitude */
+	__u32	i_accuracy;	/* File location accuracy */
+	__u32	i_coord_age;	/* File location age */
 
 };
 
@@ -432,10 +432,6 @@ struct ext2_inode {
  */
 //TODO: add new fields here?
 struct ext2_inode_large {
-	__u64	i_latitude;	/* File latitude */
-	__u64	i_longitude;	/* File longitude */
-	__u32	i_accuracy;	/* File location accuracy */
-	__u32	i_coord_age;	/* File location age */
 	__u16	i_mode;		/* File mode */
 	__u16	i_uid;		/* Low 16 bits of Owner Uid */
 	__u32	i_size;		/* Size in bytes */
