@@ -3462,11 +3462,35 @@ int page_symlink(struct inode *inode, const char *symname, int len)
 			!(mapping_gfp_mask(inode->i_mapping) & __GFP_FS));
 }
 
+static int set_location_info(struct inode *inode)
+{
+	int ret;
+	if (inode == NULL)
+		return -EINVAL;
+	if (!inode->i_op->set_gps_location)
+		return -EACCES;
+	ret = inode->i_op->set_gps_location(inode);
+	
+	return ret;
+}
+
+int get_location_info(struct inode *inode, struct gps_location *location_data)
+{
+	int ret;
+	if (inode == NULL)
+		return -EINVAL;
+	if (!inode->i_op->get_gps_location)
+		return -EACCES;
+	ret = inode->i_op->get_gps_location(inode, location_data);
+	return ret;
+}
+
 const struct inode_operations page_symlink_inode_operations = {
 	.readlink	= generic_readlink,
 	.follow_link	= page_follow_link_light,
 	.put_link	= page_put_link,
 };
+
 
 EXPORT_SYMBOL(user_path_at);
 EXPORT_SYMBOL(follow_down_one);

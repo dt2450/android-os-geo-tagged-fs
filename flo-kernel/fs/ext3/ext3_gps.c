@@ -2,6 +2,7 @@
 #include <linux/gps.h>
 #include "ext3_gps.h"
 #include "ext3.h"
+
 int ext3_set_gps_location(struct inode *f_inode)
 {
 	/*TODO:locking*/
