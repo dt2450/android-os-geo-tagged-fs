@@ -9,14 +9,20 @@
 #include <linux/gps.h>
 
 static struct gps_location *__k_loc = NULL;
+unsigned long long __timestamp;
 
-struct gps_location *__get_gps_location()
+unsigned long long __get_timestamp(void)
+{
+	return __timestamp;
+}
+
+struct gps_location *__get_gps_location(void)
 {
 	return __k_loc;
 }
 
 
-static int init_k_loc()
+static int init_k_loc(void)
 {
 	if (__k_loc == NULL) {
 		__k_loc = kmalloc(sizeof(struct gps_location), GFP_KERNEL);
