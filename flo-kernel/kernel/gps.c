@@ -8,7 +8,9 @@
 
 #include <linux/gps.h>
 
+static DEFINE_RWLOCK(gps_loc_lock);
 static struct gps_location *__k_loc = NULL;
+static struct gps_location *temp = NULL;
 unsigned long long __timestamp;
 
 unsigned long long __get_timestamp(void)
@@ -18,7 +20,12 @@ unsigned long long __get_timestamp(void)
 
 struct gps_location *__get_gps_location(void)
 {
-	return __k_loc;
+	read_lock(&gps_loc_lock);
+	temp->latitude = __k_loc->latitude;
+        temp->longitude = __k_loc->longitude;
+        temp->accuracy = __k_loc->accuracy;
+	read_unlock(&gps_loc_lock);	
+	return temp;
 }
 
 
@@ -27,11 +34,18 @@ static int init_k_loc(void)
 	if (__k_loc == NULL) {
 		__k_loc = kmalloc(sizeof(struct gps_location), GFP_KERNEL);
 		if (__k_loc == NULL) {
-			pr_err("set_gps_location: couldn't allocate __k_loc\n");
+			pr_err("init_k_loc: couldn't allocate __k_loc\n");
 			return -ENOMEM;
 		}
 	}
 
+	if (temp == NULL) {
+		temp = kmalloc(sizeof(struct gps_location), GFP_KERNEL);
+		if (temp == NULL) {
+			pr_err("init_k_loc: couldn't allocate temp\n");
+			return -ENOMEM;
+		}
+	}
 	return 1;
 }
 
@@ -76,14 +90,11 @@ SYSCALL_DEFINE1(set_gps_location, struct gps_location __user *, loc)
 	}
 
 	//maybe need to use locking here??
+	write_lock(&gps_loc_lock);
 	__k_loc->latitude = k_loc->latitude;
 	__k_loc->longitude = k_loc->longitude;
 	__k_loc->accuracy = k_loc->accuracy;
-	/*pr_err("GPS data: lat: %x, lon: %x, acc: %x\n",
-			__k_loc->latitude,
-			__k_loc->longitude,
-			__k_loc->accuracy);*/
-
+	write_unlock(&gps_loc_lock);
 	kfree(k_loc);
 /*
 	//unable to do double and float related operations!!!

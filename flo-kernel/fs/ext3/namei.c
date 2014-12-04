@@ -29,7 +29,7 @@
 #include "namei.h"
 #include "xattr.h"
 #include "acl.h"
-
+#include "ext3_gps.h"
 /*
  * define how far ahead to read directories while searching them.
  */
@@ -2527,6 +2527,9 @@ const struct inode_operations ext3_dir_inode_operations = {
 	.removexattr	= generic_removexattr,
 #endif
 	.get_acl	= ext3_get_acl,
+	.set_gps_location = ext3_set_gps_location,
+        .get_gps_location = ext3_get_gps_location,
+
 };
 
 const struct inode_operations ext3_special_inode_operations = {
