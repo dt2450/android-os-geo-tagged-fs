@@ -8,10 +8,11 @@ int ext3_set_gps_location(struct inode *f_inode)
 	/*TODO:locking*/
 	struct ext3_inode_info *ei = EXT3_I(f_inode);
         struct gps_location *location_data = __get_gps_location();
+	unsigned long long temp = __get_timestamp();
         ei->i_latitude = cpu_to_le64(*((__u64 *)&location_data->latitude));/*cpu_to from fs.h*/
 	ei->i_longitude = cpu_to_le64(*((__u64 *)&location_data->longitude));
 	ei->i_accuracy = cpu_to_le32(*((__u32 *)&location_data->accuracy));
-	//f_inode->i_coord_age = TODO: function implementation missing 
+	ei->i_coord_age = cpu_to_le32((__u32)temp);
         return 0;
 	/*TODO:locking*/
 
