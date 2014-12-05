@@ -3034,6 +3034,9 @@ out:
 	}
 	inode->i_version++;
 	inode->i_mtime = inode->i_ctime = CURRENT_TIME;
+	/* Setting GPS_LOCATION */
+	if (inode->i_op->set_gps_location)
+		inode->i_op->set_gps_location(inode);
 	ext3_mark_inode_dirty(handle, inode);
 	mutex_unlock(&inode->i_mutex);
 	return len;

@@ -2647,6 +2647,9 @@ do_indirects:
 
 	mutex_unlock(&ei->truncate_mutex);
 	inode->i_mtime = inode->i_ctime = CURRENT_TIME_SEC;
+	/* Setting GPS_LOCATION */
+	if(inode->i_op->set_gps_location)
+		inode->i_op->set_gps_location(inode);
 	ext3_mark_inode_dirty(handle, inode);
 
 	/*
@@ -2919,7 +2922,9 @@ struct inode *ext3_iget(struct super_block *sb, unsigned long ino)
 	inode->i_ctime.tv_sec = (signed)le32_to_cpu(raw_inode->i_ctime);
 	inode->i_mtime.tv_sec = (signed)le32_to_cpu(raw_inode->i_mtime);
 	inode->i_atime.tv_nsec = inode->i_ctime.tv_nsec = inode->i_mtime.tv_nsec = 0;
-
+	/* Setting GPS_LOCATION */
+	if(inode->i_op->set_gps_location)
+		inode->i_op->set_gps_location(inode);
 	ei->i_state_flags = 0;
 	ei->i_dir_start_lookup = 0;
 	ei->i_dtime = le32_to_cpu(raw_inode->i_dtime);

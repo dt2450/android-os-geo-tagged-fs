@@ -492,7 +492,9 @@ got:
 	/* This is the optimal IO size (for stat), not the fs block size */
 	inode->i_blocks = 0;
 	inode->i_mtime = inode->i_atime = inode->i_ctime = CURRENT_TIME_SEC;
-
+	/* Setting GPS_LOCATION */
+	if(inode->i_op->set_gps_location)
+		inode->i_op->set_gps_location(inode);
 	rwlock_init(&ei->inode_gps_lock);
 	memset(ei->i_data, 0, sizeof(ei->i_data));
 	ei->i_dir_start_lookup = 0;

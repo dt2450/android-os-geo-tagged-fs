@@ -3461,7 +3461,7 @@ int page_symlink(struct inode *inode, const char *symname, int len)
 	return __page_symlink(inode, symname, len,
 			!(mapping_gfp_mask(inode->i_mapping) & __GFP_FS));
 }
-
+/*
 static int set_location_info(struct inode *inode)
 {
 	int ret;
@@ -3474,7 +3474,7 @@ static int set_location_info(struct inode *inode)
 
 	return ret;
 }
-
+*/
 int get_location_info(struct inode *inode, struct gps_location *location_data)
 {
 	int ret;
