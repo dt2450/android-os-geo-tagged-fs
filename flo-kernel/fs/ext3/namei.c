@@ -2528,8 +2528,7 @@ const struct inode_operations ext3_dir_inode_operations = {
 #endif
 	.get_acl	= ext3_get_acl,
 	.set_gps_location = ext3_set_gps_location,
-        .get_gps_location = ext3_get_gps_location,
-
+	.get_gps_location = ext3_get_gps_location,
 };
 
 const struct inode_operations ext3_special_inode_operations = {

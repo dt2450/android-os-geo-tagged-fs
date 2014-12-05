@@ -3465,18 +3465,20 @@ int page_symlink(struct inode *inode, const char *symname, int len)
 static int set_location_info(struct inode *inode)
 {
 	int ret;
+
 	if (inode == NULL)
 		return -EINVAL;
 	if (!inode->i_op->set_gps_location)
 		return -EACCES;
 	ret = inode->i_op->set_gps_location(inode);
-	
+
 	return ret;
 }
 
 int get_location_info(struct inode *inode, struct gps_location *location_data)
 {
 	int ret;
+
 	if (inode == NULL)
 		return -EINVAL;
 	if (!inode->i_op->get_gps_location)

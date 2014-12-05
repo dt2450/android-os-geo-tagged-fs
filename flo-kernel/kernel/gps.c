@@ -9,13 +9,14 @@
 #include <linux/gps.h>
 
 static DEFINE_RWLOCK(gps_loc_lock);
-static struct gps_location *__k_loc = NULL;
-static struct gps_location *temp = NULL;
+static struct gps_location *__k_loc;
+static struct gps_location *temp;
 unsigned long long __timestamp;
 
 unsigned long long __get_timestamp(void)
 {
-	/*TODO: need to add locking here and also avoid dead lock since two resources are exposed*/
+	/*TODO: need to add locking here and also avoid dead lock since
+	* two resources are exposed*/
 	return __timestamp;
 }
 
@@ -23,9 +24,9 @@ struct gps_location *__get_gps_location(void)
 {
 	read_lock(&gps_loc_lock);
 	temp->latitude = __k_loc->latitude;
-        temp->longitude = __k_loc->longitude;
-        temp->accuracy = __k_loc->accuracy;
-	read_unlock(&gps_loc_lock);	
+	temp->longitude = __k_loc->longitude;
+	temp->accuracy = __k_loc->accuracy;
+	read_unlock(&gps_loc_lock);
 	return temp;
 }
 
@@ -76,35 +77,27 @@ SYSCALL_DEFINE1(set_gps_location, struct gps_location __user *, loc)
 		return -EINVAL;
 	}
 
-	if ((ret = init_k_loc()) != 1)
+	ret = init_k_loc();
+
+	if (ret != 1)
 		return ret;
 
 	k_loc = kmalloc(sizeof(struct gps_location), GFP_KERNEL);
-	if (k_loc == NULL) {
-		pr_err("set_gps_location: couldn't allocate k_loc\n");
+	if (k_loc == NULL)
 		return -ENOMEM;
-	}
 
 	if (copy_from_user(k_loc, loc, sizeof(struct gps_location))) {
 		pr_err("set_gps_location: copy_from_user failed.\n");
 		return -EFAULT;
 	}
 
-	//maybe need to use locking here??
 	write_lock(&gps_loc_lock);
 	__k_loc->latitude = k_loc->latitude;
 	__k_loc->longitude = k_loc->longitude;
 	__k_loc->accuracy = k_loc->accuracy;
 	write_unlock(&gps_loc_lock);
 	kfree(k_loc);
-/*
-	//unable to do double and float related operations!!!
 
-	pr_err("set_gps_location: lat: %d, long: %d, acc: %d\n",
-			(int) k_loc->latitude,
-			(int) k_loc->longitude,
-			(int) k_loc->accuracy);
-*/
 	return 0;
 }
 
@@ -128,18 +121,14 @@ SYSCALL_DEFINE2(get_gps_location,
 	}
 
 	k_loc = kmalloc(sizeof(struct gps_location), GFP_KERNEL);
-	if (k_loc == NULL) {
-		pr_err("get_gps_location: couldn't allocate k_loc\n");
+	if (k_loc == NULL)
 		return -ENOMEM;
-	}
 
 	if (copy_from_user(k_loc, loc, sizeof(struct gps_location))) {
 		pr_err("get_gps_location: copy_from_user failed for loc.\n");
 		return -EFAULT;
 	}
 
-
-	//need to check for null-terminated string
 	path_len = strlen(pathname);
 	if (path_len <= 0) {
 		pr_err("get_gps_location: pathname is invalid\n");
@@ -147,23 +136,16 @@ SYSCALL_DEFINE2(get_gps_location,
 	}
 
 	k_path = kmalloc(path_len, GFP_KERNEL);
-	if (k_path == NULL) {
-		pr_err("get_gps_location: couldn't allocate k_path.\n");
+	if (k_path == NULL)
 		return -ENOMEM;
-	}
 
 	if (copy_from_user(k_path, pathname, path_len)) {
 		pr_err("get_gps_location: copy_from_user failed for path.\n");
+		return -EFAULT;
 	}
-
 
 	pr_err("get_gps_location: pathname: %s, path_len: %d.\n",
 			k_path, path_len);
 
-
-	/*pr_err("get_gps_location: lat: %x, long: %x, acc: %x\n",
-			k_loc->latitude,
-			k_loc->longitude,
-			k_loc->accuracy);*/
 	return 0;
 }

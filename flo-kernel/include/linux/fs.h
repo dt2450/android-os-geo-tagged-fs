@@ -1658,7 +1658,7 @@ struct inode_operations {
 	int (*mknod) (struct inode *,struct dentry *,umode_t,dev_t);
 	int (*rename) (struct inode *, struct dentry *,
 			struct inode *, struct dentry *);
-	
+
 	int (*set_gps_location)(struct inode *);
 	int (*get_gps_location)(struct inode *, struct gps_location *);
 
