@@ -9,10 +9,10 @@ int ext3_set_gps_location(struct inode *f_inode)
         struct gps_location *location_data = __get_gps_location();
 	unsigned long long temp = __get_timestamp();
 	write_lock(&ei->inode_gps_lock); 
-	ei->i_latitude = cpu_to_le64(*((__u64 *)&location_data->latitude));/*cpu_to from fs.h*/
-	ei->i_longitude = cpu_to_le64(*((__u64 *)&location_data->longitude));
-	ei->i_accuracy = cpu_to_le32(*((__u32 *)&location_data->accuracy));
-	ei->i_coord_age = cpu_to_le32((__u32)temp);
+	ei->i_latitude = cpu_to_le64(*((__le64 *)&location_data->latitude));/*cpu_to from fs.h*/
+	ei->i_longitude = cpu_to_le64(*((__le64 *)&location_data->longitude));
+	ei->i_accuracy = cpu_to_le32(*((__le32 *)&location_data->accuracy));
+	ei->i_coord_age = cpu_to_le32((__le32)temp);
 	write_unlock(&ei->inode_gps_lock);
         return 1;
 
@@ -20,8 +20,8 @@ int ext3_set_gps_location(struct inode *f_inode)
 
 int ext3_get_gps_location(struct inode *f_inode, struct gps_location *location_data)
 {
-	__u64 lat,lon;
-	__u32 accuracy;
+	__le64 lat,lon;
+	__le32 accuracy;
 	struct ext3_inode_info *ei;
 	if (location_data == NULL || f_inode == NULL)
 		return -EINVAL;
