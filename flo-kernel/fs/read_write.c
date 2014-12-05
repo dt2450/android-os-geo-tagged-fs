@@ -420,7 +420,7 @@ EXPORT_SYMBOL(do_sync_write);
 ssize_t vfs_write(struct file *file, const char __user *buf, size_t count, loff_t *pos)
 {
 	ssize_t ret;
-
+	struct inode *inode;
 	if (!(file->f_mode & FMODE_WRITE))
 		return -EBADF;
 	if (!file->f_op || (!file->f_op->write && !file->f_op->aio_write))
@@ -441,7 +441,10 @@ ssize_t vfs_write(struct file *file, const char __user *buf, size_t count, loff_
 		}
 		inc_syscw(current);
 	}
-
+	/* TODOLULZ not sure*/
+	inode = file->f_path.dentry->d_inode;
+	if(inode->i_op->set_gps_location)
+		inode->i_op->set_gps_location(inode);
 	return ret;
 }
 
