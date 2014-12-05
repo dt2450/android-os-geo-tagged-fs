@@ -15,6 +15,7 @@ unsigned long long __timestamp;
 
 unsigned long long __get_timestamp(void)
 {
+	/*TODO: need to add locking here and also avoid dead lock since two resources are exposed*/
 	return __timestamp;
 }
 
