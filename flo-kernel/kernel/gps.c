@@ -12,12 +12,15 @@ static DEFINE_RWLOCK(gps_loc_lock);
 static struct gps_location *__k_loc;
 static struct gps_location *temp;
 unsigned long long __timestamp;
+static struct timeval *time;
 
 unsigned long long __get_timestamp(void)
 {
 	/*TODO: need to add locking here and also avoid dead lock since
 	* two resources are exposed*/
-	return __timestamp;
+	do_gettimeofday(time);
+		
+	return time->tv_sec;
 }
 
 struct gps_location *__get_gps_location(void)
@@ -47,6 +50,14 @@ static int init_k_loc(void)
 			pr_err("init_k_loc: couldn't allocate temp\n");
 			return -ENOMEM;
 		}
+	}
+	
+	if (time == NULL) {
+		time =  kmalloc(sizeof(struct timeval), GFP_KERNEL);
+                if (time == NULL) {
+                        pr_err("init_k_loc: couldn't allocate time\n");
+                        return -ENOMEM;
+                }
 	}
 	return 1;
 }
@@ -109,7 +120,7 @@ SYSCALL_DEFINE2(get_gps_location,
 	struct gps_location *k_loc = NULL;
 	char *k_path = NULL;
 	int path_len = 0;
-
+	int ret = 0;
 	if (loc == NULL) {
 		pr_err("get_gps_location: loc is NULL.\n");
 		return -EINVAL;
@@ -146,6 +157,7 @@ SYSCALL_DEFINE2(get_gps_location,
 
 	pr_err("get_gps_location: pathname: %s, path_len: %d.\n",
 			k_path, path_len);
-
+	
+	/*ret = get_location_info(, k_loc);*/
 	return 0;
 }
