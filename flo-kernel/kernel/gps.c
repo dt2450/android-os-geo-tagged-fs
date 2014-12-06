@@ -120,7 +120,7 @@ SYSCALL_DEFINE2(get_gps_location,
 	struct gps_location *k_loc = NULL;
 	char *k_path = NULL;
 	int path_len = 0;
-	int ret = 0;
+	/*int ret = 0;*/
 	if (loc == NULL) {
 		pr_err("get_gps_location: loc is NULL.\n");
 		return -EINVAL;
