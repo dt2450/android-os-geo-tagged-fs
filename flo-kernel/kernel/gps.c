@@ -18,8 +18,9 @@ unsigned long long __get_timestamp(void)
 {
 	/*TODO: need to add locking here and also avoid dead lock since
 	* two resources are exposed*/
+	
 	do_gettimeofday(time);
-		
+	pr_err("\n get_timestamp\n");	
 	return time->tv_sec;
 }
 
@@ -29,7 +30,11 @@ struct gps_location *__get_gps_location(void)
 	temp->latitude = __k_loc->latitude;
 	temp->longitude = __k_loc->longitude;
 	temp->accuracy = __k_loc->accuracy;
+	pr_err("\n get_gps_loc_gpsc_lat: %x", *(__u64 *)&temp->latitude);
+	pr_err("\n get_gps_loc_gpsc_lon: %x", *(__u64 *)&temp->longitude);
+	pr_err("\n get_gps_loc_gpsc_accu: %x", *(__u64 *)&temp->accuracy);
 	read_unlock(&gps_loc_lock);
+	pr_err("\nafter read_unlcok get_gps_loc\n");
 	return temp;
 }
 
@@ -118,8 +123,8 @@ SYSCALL_DEFINE2(get_gps_location,
 		struct gps_location __user *, loc)
 {
 	struct gps_location *k_loc = NULL;
-	char *k_path = NULL;
-	struct path *path = NULL;
+//	char *k_path = NULL;
+	struct path st_path;
 	int path_len = 0;
 	int ret = 0;
 	if (loc == NULL) {
@@ -143,7 +148,7 @@ SYSCALL_DEFINE2(get_gps_location,
 		return -EINVAL;
 	}
 
-	k_path = kmalloc(path_len, GFP_KERNEL);
+/*	k_path = kmalloc(path_len, GFP_KERNEL);
 	if (k_path == NULL)
 		return -ENOMEM;
 
@@ -153,13 +158,18 @@ SYSCALL_DEFINE2(get_gps_location,
 	}
 
 	pr_err("get_gps_location: pathname: %s, path_len: %d.\n",
-			k_path, path_len);
+			k_path, path_len);*/
 	
-	ret = user_path(k_path, path);
-	if (ret || path == NULL)
+	ret = user_path(pathname, &st_path);
+	if (ret) {
+		pr_err("\nerror occured while trying to get path %d", ret);
 		return -EINVAL;
-	ret = get_location_info(path->dentry->d_inode, k_loc);
+	}
+	ret = get_location_info(st_path.dentry->d_inode, k_loc);
 	
+	pr_err("\n get_gps_loc_gps_SYSCALL_lat: %f", *(__u64 *)&k_loc->latitude);
+	pr_err("\n get_gps_loc_gps_SYSCALL_lon: %f", *(__u64 *)&k_loc->longitude);
+	pr_err("\n get_gps_loc_gps_SYSCALL_accu: %f", *(__u64 *)&k_loc->accuracy);
 	if (copy_to_user(loc, k_loc, sizeof(struct gps_location))) {
 		pr_err("get_gps_location: copy_to_user failed for loc.\n");
 		return -EFAULT;

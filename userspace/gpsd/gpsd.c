@@ -2,12 +2,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-//#include <sys/syscall.h>
 
 #include "gpsd.h"
-
-//#define __NR_set_gps_location   378
-//#define __NR_get_gps_location   379
 
 
 struct gps_location *get_file_data()
@@ -28,7 +24,6 @@ struct gps_location *get_file_data()
 		return NULL;
 	}
 
-	//printf("gpsd: reading GPS data from file.\n");
 	f = fopen(GPS_LOCATION_FILE, "r");
 	if (f == NULL) {
 		perror("gpsd: couldn't open GPS file for reading.");
@@ -36,7 +31,6 @@ struct gps_location *get_file_data()
 	}
 
 	while ((r = getline(&line, &len, f)) != -1) {
-	//	printf("Line %d: %s", line_num, line);
 		switch (line_num) {
 		case 0:	lat = strtod(line, NULL);
 			break;
