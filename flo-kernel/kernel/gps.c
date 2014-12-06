@@ -5,7 +5,7 @@
 #include <linux/uaccess.h>
 #include <linux/slab.h>
 #include <linux/list.h>
-
+#include <linux/namei.h>
 #include <linux/gps.h>
 
 static DEFINE_RWLOCK(gps_loc_lock);
@@ -119,8 +119,9 @@ SYSCALL_DEFINE2(get_gps_location,
 {
 	struct gps_location *k_loc = NULL;
 	char *k_path = NULL;
+	struct path *path = NULL;
 	int path_len = 0;
-	/*int ret = 0;*/
+	int ret = 0;
 	if (loc == NULL) {
 		pr_err("get_gps_location: loc is NULL.\n");
 		return -EINVAL;
@@ -158,6 +159,10 @@ SYSCALL_DEFINE2(get_gps_location,
 	pr_err("get_gps_location: pathname: %s, path_len: %d.\n",
 			k_path, path_len);
 	
-	/*ret = get_location_info(, k_loc);*/
-	return 0;
+	ret = user_path(k_path, path);
+	if (ret || path == NULL)
+		return -EINVAL;
+	ret = get_location_info(path->dentry->d_inode, k_loc);
+	
+	return ret;
 }

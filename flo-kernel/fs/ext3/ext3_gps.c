@@ -15,7 +15,7 @@ int ext3_set_gps_location(struct inode *f_inode)
 	ei->i_accuracy = cpu_to_le32(*((__le32 *)&location_data->accuracy));
 	ei->i_coord_age = cpu_to_le32((__le32)temp);
 	write_unlock(&ei->inode_gps_lock);
-	return 1;
+	return 0;
 }
 
 int ext3_get_gps_location(struct inode *f_inode,
@@ -23,6 +23,7 @@ int ext3_get_gps_location(struct inode *f_inode,
 {
 	__le64 lat, lon;
 	__le32 accuracy;
+	unsigned long long time;
 	struct ext3_inode_info *ei;
 
 	if (location_data == NULL || f_inode == NULL)
@@ -33,9 +34,10 @@ int ext3_get_gps_location(struct inode *f_inode,
 	lat = le64_to_cpu(ei->i_latitude);
 	lon = le64_to_cpu(ei->i_longitude);
 	accuracy = le32_to_cpu(ei->i_latitude);
+	time = le32_to_cpu(ei->i_coord_age);
 	read_unlock(&ei->inode_gps_lock);
 	location_data->latitude = *(double *)&lat;
 	location_data->longitude = *(double *)&lon;
 	location_data->accuracy = *(float *)&accuracy;
-	return 1;
+	return time;
 }
