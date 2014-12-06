@@ -492,7 +492,9 @@ got:
 	/* This is the optimal IO size (for stat), not the fs block size */
 	inode->i_blocks = 0;
 	inode->i_mtime = inode->i_atime = inode->i_ctime = CURRENT_TIME_SEC;
-	rwlock_init(&ei->inode_gps_lock);
+
+	spin_lock_init(&ei->inode_gps_lock);
+
 	/* Setting GPS_LOCATION */
 	pr_err("\nialloc about to call set_gps");
 	if(inode->i_op->set_gps_location)

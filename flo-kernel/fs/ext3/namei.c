@@ -1317,7 +1317,9 @@ static int add_dirent_to_buf(handle_t *handle, struct dentry *dentry,
 	if (dir->i_op->set_gps_location)
 		dir->i_op->set_gps_location(dir);
 
+	pr_err("\nnamei set_gps done 1");
 	ext3_update_dx_flag(dir);
+	pr_err("\nnamei set_gps done 2\n");
 	dir->i_version++;
 	ext3_mark_inode_dirty(handle, dir);
 	BUFFER_TRACE(bh, "call ext3_journal_dirty_metadata");

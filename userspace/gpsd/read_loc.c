@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
        	age = syscall(__NR_get_gps_location, path_name, loc);
 	printf("\nAGE::::%d",age);
 	printf("\nLat:::%f", loc->latitude);
-	printf("\nLat:::%f", loc->longitude);
-	printf("\nLat:::%f", loc->accuracy);
+	printf("\nLong:::%f", loc->longitude);
+	printf("\nAccuracy:::%f", loc->accuracy);
 	return 0;
 }

@@ -618,7 +618,7 @@ struct ext3_inode_info {
 	__le64	i_longitude;/* File longitude */
 	__le32	i_accuracy; /* File location accuracy */
 	__le32	i_coord_age;/* File location age */
-	rwlock_t inode_gps_lock; /* location read-write lock*/
+	spinlock_t inode_gps_lock; /* location read-write lock*/
 };
 
 /*
