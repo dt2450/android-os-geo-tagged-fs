@@ -136,12 +136,8 @@ SYSCALL_DEFINE2(get_gps_location,
 	if (k_loc == NULL)
 		return -ENOMEM;
 
-	if (copy_from_user(k_loc, loc, sizeof(struct gps_location))) {
-		pr_err("get_gps_location: copy_from_user failed for loc.\n");
-		return -EFAULT;
-	}
 
-	path_len = strlen(pathname);
+	path_len = strlen(pathname) + 1;
 	if (path_len <= 0) {
 		pr_err("get_gps_location: pathname is invalid\n");
 		return -EINVAL;
@@ -164,5 +160,9 @@ SYSCALL_DEFINE2(get_gps_location,
 		return -EINVAL;
 	ret = get_location_info(path->dentry->d_inode, k_loc);
 	
+	if (copy_to_user(loc, k_loc, sizeof(struct gps_location))) {
+		pr_err("get_gps_location: copy_to_user failed for loc.\n");
+		return -EFAULT;
+	}
 	return ret;
 }
