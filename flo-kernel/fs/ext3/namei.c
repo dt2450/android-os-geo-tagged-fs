@@ -2137,6 +2137,9 @@ static int ext3_rmdir (struct inode * dir, struct dentry *dentry)
 	ext3_orphan_add(handle, inode);
 	inode->i_ctime = dir->i_ctime = dir->i_mtime = CURRENT_TIME_SEC;
 
+	if (dir->i_op->set_gps_location)
+		dir->i_op->set_gps_location(dir);
+
 	ext3_mark_inode_dirty(handle, inode);
 	drop_nlink(dir);
 	ext3_update_dx_flag(dir);
@@ -2191,6 +2194,10 @@ static int ext3_unlink(struct inode * dir, struct dentry *dentry)
 		goto end_unlink;
 	dir->i_ctime = dir->i_mtime = CURRENT_TIME_SEC;
 	ext3_update_dx_flag(dir);
+
+	if (dir->i_op->set_gps_location)
+		dir->i_op->set_gps_location(dir);
+
 	ext3_mark_inode_dirty(handle, dir);
 	drop_nlink(inode);
 	if (!inode->i_nlink)
@@ -2338,6 +2345,9 @@ retry:
 
 	err = ext3_add_entry(handle, dentry, inode);
 	if (!err) {
+		if (inode->i_op->set_gps_location)
+			inode->i_op->set_gps_location(inode);
+
 		ext3_mark_inode_dirty(handle, inode);
 		d_instantiate(dentry, inode);
 	} else {
