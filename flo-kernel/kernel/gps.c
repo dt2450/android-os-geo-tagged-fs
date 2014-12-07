@@ -14,17 +14,16 @@ DEFINE_SPINLOCK(gps_loc_lock);
 
 struct gps_location __k_loc;
 unsigned long long __timestamp;
-static struct timeval time;
 
-unsigned long long __get_timestamp(void)
+unsigned long long get_age(void)
 {
-	/*TODO: need to add locking here and also avoid dead lock since
-	* two resources are exposed*/
-	
-	do_gettimeofday(&time);
-	pr_err("\n get_timestamp\n");	
-	return time.tv_sec;
+	struct timespec t;
+	t = CURRENT_TIME_SEC;
+	return (t.tv_sec - __timestamp);
 }
+
+
+
 
 /*
 struct gps_location *__get_gps_location(void)
@@ -78,6 +77,7 @@ SYSCALL_DEFINE1(set_gps_location, struct gps_location __user *, loc)
 	struct gps_location *k_loc = NULL;
 	int uid;
 	int ret;
+	struct timespec time;
 
 	read_lock(&tasklist_lock);
 	if (current == NULL || current->real_cred == NULL) {
@@ -121,6 +121,8 @@ SYSCALL_DEFINE1(set_gps_location, struct gps_location __user *, loc)
 	__k_loc.latitude = k_loc->latitude;
 	__k_loc.longitude = k_loc->longitude;
 	__k_loc.accuracy = k_loc->accuracy;
+	time = CURRENT_TIME_SEC;
+	__timestamp = time.tv_sec;
 	spin_unlock(&gps_loc_lock);
 	kfree(k_loc);
 
