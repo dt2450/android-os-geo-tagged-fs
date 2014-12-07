@@ -28,5 +28,11 @@ int main(int argc, char *argv[])
 	printf("Lat:::%f\n", loc->latitude);
 	printf("Long:::%f\n", loc->longitude);
 	printf("Accuracy:::%f\n", loc->accuracy);
+
+	printf("http://maps.googleapis.com/maps/api/staticmap?center=%f,%f",
+			loc->latitude, loc->longitude);
+	printf("&zoom=14&size=600x600&markers=color:blue%%7Clabel:S%%7C%f,%f\n",
+			loc->latitude, loc->longitude);
+
 	return 0;
 }
