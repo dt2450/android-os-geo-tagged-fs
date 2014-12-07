@@ -493,12 +493,9 @@ got:
 	inode->i_blocks = 0;
 	inode->i_mtime = inode->i_atime = inode->i_ctime = CURRENT_TIME_SEC;
 
-	spin_lock_init(&ei->inode_gps_lock);
-
-	/* Setting GPS_LOCATION */
-	pr_err("\nialloc about to call set_gps");
-	if(inode->i_op->set_gps_location)
+	if (inode->i_op->set_gps_location)
 		inode->i_op->set_gps_location(inode);
+
 	memset(ei->i_data, 0, sizeof(ei->i_data));
 	ei->i_dir_start_lookup = 0;
 	ei->i_disksize = 0;

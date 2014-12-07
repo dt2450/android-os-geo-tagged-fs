@@ -2136,10 +2136,7 @@ static int ext3_rmdir (struct inode * dir, struct dentry *dentry)
 	inode->i_size = 0;
 	ext3_orphan_add(handle, inode);
 	inode->i_ctime = dir->i_ctime = dir->i_mtime = CURRENT_TIME_SEC;
-	/* Setting GPS_LOCATION */
-	pr_err("\nnamei set_gps 2");
-	if (inode->i_op->set_gps_location)
-		inode->i_op->set_gps_location(inode);
+
 	ext3_mark_inode_dirty(handle, inode);
 	drop_nlink(dir);
 	ext3_update_dx_flag(dir);
@@ -2456,6 +2453,8 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 	 * Like most other Unix systems, set the ctime for inodes on a
 	 * rename.
 	 */
+	if (old_inode->i_op->set_gps_location)
+		old_inode->i_op->set_gps_location(old_inode);
 	old_inode->i_ctime = CURRENT_TIME_SEC;
 	ext3_mark_inode_dirty(handle, old_inode);
 
@@ -2491,8 +2490,11 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 	if (new_inode) {
 		drop_nlink(new_inode);
 		new_inode->i_ctime = CURRENT_TIME_SEC;
+		if (new_inode->i_op->set_gps_location)
+			new_inode->i_op->set_gps_location(new_inode);
 	}
 	old_dir->i_ctime = old_dir->i_mtime = CURRENT_TIME_SEC;
+
 	/* Setting GPS_LOCATION*/
 	pr_err("\nnamei set_gps 5");
 	if (old_dir->i_op->set_gps_location)

@@ -527,6 +527,7 @@ static void init_once(void *foo)
 #endif
 	mutex_init(&ei->truncate_mutex);
 	inode_init_once(&ei->vfs_inode);
+	spin_lock_init(&ei->inode_gps_lock);
 }
 
 static int init_inodecache(void)
