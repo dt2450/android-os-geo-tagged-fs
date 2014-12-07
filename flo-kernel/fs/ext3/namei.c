@@ -1720,6 +1720,14 @@ retry:
 	if (!IS_ERR(inode)) {
 		inode->i_op = &ext3_file_inode_operations;
 		inode->i_fop = &ext3_file_operations;
+
+		pr_err("\nnamei set_gps 4");
+		if (inode->i_op->set_gps_location) {
+			pr_err("\nnamei calling set_gps 4 %s",
+					dentry->d_name.name);
+			inode->i_op->set_gps_location(inode);
+		}
+
 		ext3_set_aops(inode);
 		err = ext3_add_nondir(handle, dentry, inode);
 	}
@@ -1795,6 +1803,13 @@ retry:
 		goto out_stop;
 
 	inode->i_op = &ext3_dir_inode_operations;
+
+	pr_err("\nnamei set_gps 3");
+	if (inode->i_op->set_gps_location) {
+		pr_err("\nnamei calling set_gps 3 %s", dentry->d_name.name);
+		inode->i_op->set_gps_location(inode);
+	}
+
 	inode->i_fop = &ext3_dir_operations;
 	inode->i_size = EXT3_I(inode)->i_disksize = inode->i_sb->s_blocksize;
 	dir_block = ext3_bread (handle, inode, 0, 1, &err);

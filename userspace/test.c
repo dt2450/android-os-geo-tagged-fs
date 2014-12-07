@@ -4,30 +4,19 @@
 #include <string.h>
 #include <sys/syscall.h>
 
-#define __NR_set_gps_location	378
-#define __NR_get_gps_location	379
-
-
-struct gps_location {
-	double latitude;
-	double longitude;
-	float  accuracy;  /* in meters */
-};
-
-int main(void)
+int main(int argc, char **argv)
 {
-	struct gps_location *loc;
 	int ret;
-
-	loc = (struct gps_location *) malloc(sizeof(struct gps_location));
-	loc->latitude = 111;
-	loc->longitude = 222;
-	loc->accuracy = 333;
-
-	ret = syscall(__NR_set_gps_location, loc);
-	printf("Ret: %d\n", ret);
-
-	ret = syscall(__NR_get_gps_location, "/root", loc);
+	if (argc == 2) {
+		unsigned int addr = 0;
+		char *ptr;
+		addr = strtoul(argv[1], &ptr, 10);
+		printf("Address is: 0x%x\n", addr);
+		printf("Address is: %s\n", argv[1]);
+		ret = syscall(380, addr);
+	} else {
+		ret = syscall(380, 0);
+	}
 	printf("Ret: %d\n", ret);
 
 	return 0;

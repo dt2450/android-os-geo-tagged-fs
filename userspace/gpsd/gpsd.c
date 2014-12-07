@@ -58,9 +58,9 @@ struct gps_location *get_file_data()
 				lat, lon, acc);
 	}
 
-	loc->latitude = lat * 1000;
-	loc->longitude = lon * 1000;
-	loc->accuracy = acc * 1000;
+	loc->latitude = lat;
+	loc->longitude = lon;
+	loc->accuracy = acc;
 	//for debugging
 	printf("gpsd: lat: %llx, lon: %llx, acc: %x\n",
 			*(unsigned long long *)&loc->latitude,
