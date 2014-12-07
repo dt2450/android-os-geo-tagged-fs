@@ -7,6 +7,7 @@ int ext3_set_gps_location(struct inode *f_inode)
 {
 	struct ext3_inode_info *ei;
 	unsigned long long temp;
+	struct timespec t;
 
 	pr_err("\next3_set_gps_loc came here 1");
 	ei = EXT3_I(f_inode);
@@ -19,7 +20,13 @@ int ext3_set_gps_location(struct inode *f_inode)
 	ei->i_latitude = cpu_to_le64(*((u64 *)&__k_loc.latitude));
 	ei->i_longitude = cpu_to_le64(*((u64 *)&__k_loc.longitude));
 	ei->i_accuracy = cpu_to_le32(*((u32 *)&__k_loc.accuracy));
-	temp = get_age();
+
+	if (__timestamp < ~0) {
+		t = CURRENT_TIME_SEC;
+		temp = (t.tv_sec - __timestamp);
+	} else {
+		temp = ~0;
+	}
 	ei->i_coord_age = cpu_to_le32((u32)temp);
 	pr_err("\n ext3_set_gps_location_lat::: %llx", ei->i_latitude);
 	pr_err("\n ext3_set_gps_location_lon::: %llx", ei->i_longitude);

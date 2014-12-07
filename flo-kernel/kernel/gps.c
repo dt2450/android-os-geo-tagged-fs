@@ -7,20 +7,23 @@
 #include <linux/list.h>
 #include <linux/namei.h>
 #include <linux/gps.h>
+//to be removed
 #include "../fs/ext3/ext3.h"
 
 //static DEFINE_RWLOCK(gps_loc_lock);
 DEFINE_SPINLOCK(gps_loc_lock);
 
 struct gps_location __k_loc;
-unsigned long long __timestamp;
+unsigned long long __timestamp = ~0;
 
+/*
 unsigned long long get_age(void)
 {
 	struct timespec t;
 	t = CURRENT_TIME_SEC;
 	return (t.tv_sec - __timestamp);
 }
+*/
 
 
 
@@ -75,23 +78,11 @@ static int init_k_loc(void)
 SYSCALL_DEFINE1(set_gps_location, struct gps_location __user *, loc)
 {
 	struct gps_location *k_loc = NULL;
-	int uid;
-	int ret;
 	struct timespec time;
 
-	read_lock(&tasklist_lock);
-	if (current == NULL || current->real_cred == NULL) {
-		pr_err("set_gps_location: current task is invalid\n");
-		read_unlock(&tasklist_lock);
-		return -EFAULT;
-	}
-
-	uid = current->real_cred->uid;
-	read_unlock(&tasklist_lock);
-
-	if (uid != 0) {
-		pr_err("set_gps_location: called by non-root user !!\n");
-		return -EACCES;
+	if (!capable(CAP_SYS_ADMIN)) {
+		pr_err("set_gps_location: called by non-admin user !!\n");
+		return -EPERM;
 	}
 
 	if (loc == NULL) {
@@ -137,6 +128,8 @@ SYSCALL_DEFINE2(get_gps_location,
 	struct gps_location *k_loc = NULL;
 //	char *k_path = NULL;
 	struct path st_path;
+	struct inode *inode = NULL;
+	struct ext3_inode_info *ei;
 	int path_len = 0;
 	int ret = 0;
 	if (loc == NULL) {
@@ -172,18 +165,34 @@ SYSCALL_DEFINE2(get_gps_location,
 
 	pr_err("get_gps_location: pathname: %s, path_len: %d.\n",
 			k_path, path_len);*/
-	
 	ret = user_path(pathname, &st_path);
 	if (ret) {
 		pr_err("\nerror occured while trying to get path %d", ret);
 		kfree(k_loc);
 		return -EINVAL;
 	}
-	ret = get_location_info(st_path.dentry->d_inode, k_loc);
-	
+
+	inode = st_path.dentry->d_inode;
+
+	if (inode->i_uid != current_uid() && inode->i_uid != current_euid()){
+		path_put(&st_path);
+		kfree(k_loc);
+		return -EPERM;
+	}
+
+	ei = EXT3_I(inode);
+	if (ei->i_coord_age == ~0) {
+		pr_err("get_gps_location: No GPS data in inode\n");
+		path_put(&st_path);
+		kfree(k_loc);
+		return -ENODEV;
+	}
+	ret = get_location_info(inode, k_loc);
+
 	pr_err("\n get_gps_loc_gps_SYSCALL_lat: %llx", *(__u64 *)&k_loc->latitude);
 	pr_err("\n get_gps_loc_gps_SYSCALL_lon: %llx", *(__u64 *)&k_loc->longitude);
 	pr_err("\n get_gps_loc_gps_SYSCALL_accu: %x", *(__u32 *)&k_loc->accuracy);
+
 	if (copy_to_user(loc, k_loc, sizeof(struct gps_location))) {
 		pr_err("get_gps_location: copy_to_user failed for loc.\n");
 		kfree(k_loc);

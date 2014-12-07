@@ -111,9 +111,8 @@ int main(int argc, char *argv[])
 			exit(EXIT_FAILURE);
 		}
 		free(loc);
-		
-		//for debugging
-		if (usleep(1000 * 1000 * 20) == -1) {
+
+		if (usleep(1000 * 1000) == -1) {
 			perror("gpsd: couldn't sleep.");
 			exit(EXIT_FAILURE);
 		}

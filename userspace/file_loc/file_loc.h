@@ -12,7 +12,7 @@
 struct gps_location {
 	double latitude;
 	double longitude;
-	float  accuracy; 
+	float  accuracy;
 };
 
 static inline int get_gps_location(const char *pathname,
