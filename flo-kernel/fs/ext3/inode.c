@@ -2930,6 +2930,10 @@ struct inode *ext3_iget(struct super_block *sb, unsigned long ino)
 	ei->i_state_flags = 0;
 	ei->i_dir_start_lookup = 0;
 	ei->i_dtime = le32_to_cpu(raw_inode->i_dtime);
+	ei->i_latitude = raw_inode->i_latitude;
+	ei->i_longitude = raw_inode->i_longitude;
+	ei->i_accuracy = raw_inode->i_accuracy;
+	ei->i_coord_age = raw_inode->i_coord_age;
 	/* We now have enough fields to check if the inode was active or not.
 	 * This is needed because nfsd might try to access dead inodes
 	 * the test is that same one that e2fsck uses
