@@ -187,9 +187,11 @@ SYSCALL_DEFINE2(get_gps_location,
 	if (copy_to_user(loc, k_loc, sizeof(struct gps_location))) {
 		pr_err("get_gps_location: copy_to_user failed for loc.\n");
 		kfree(k_loc);
+		path_put(&st_path);
 		return -EFAULT;
 	}
 	kfree(k_loc);
+	path_put(&st_path);
 	return ret;
 }
 
