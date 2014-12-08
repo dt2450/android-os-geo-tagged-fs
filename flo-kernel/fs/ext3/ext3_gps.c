@@ -55,7 +55,7 @@ int ext3_get_gps_location(struct inode *f_inode,
 
 	lat = le64_to_cpu(ei->i_latitude);
 	lon = le64_to_cpu(ei->i_longitude);
-	accuracy = le32_to_cpu(ei->i_latitude);
+	accuracy = le32_to_cpu(ei->i_accuracy);
 	time = le32_to_cpu(ei->i_coord_age);
 
 	pr_err("\n 1. ext3_set_gps_location_lat::: %llx", ei->i_latitude);
