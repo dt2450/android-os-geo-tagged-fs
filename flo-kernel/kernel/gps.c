@@ -10,70 +10,10 @@
 //to be removed
 #include "../fs/ext3/ext3.h"
 
-//static DEFINE_RWLOCK(gps_loc_lock);
 DEFINE_SPINLOCK(gps_loc_lock);
 
 struct gps_location __k_loc;
 unsigned long long __timestamp = ~0;
-
-/*
-unsigned long long get_age(void)
-{
-	struct timespec t;
-	t = CURRENT_TIME_SEC;
-	return (t.tv_sec - __timestamp);
-}
-*/
-
-
-
-
-/*
-struct gps_location *__get_gps_location(void)
-{
-	read_lock(&gps_loc_lock);
-	temp.latitude = __k_loc.latitude;
-	temp.longitude = __k_loc.longitude;
-	temp.accuracy = __k_loc.accuracy;
-	pr_err("\n get_gps_loc_gpsc_lat: %llx", *(__u64 *)&temp.latitude);
-	pr_err("\n get_gps_loc_gpsc_lon: %llx", *(__u64 *)&temp.longitude);
-	pr_err("\n get_gps_loc_gpsc_accu: %x", *(__u32 *)&temp.accuracy);
-	read_unlock(&gps_loc_lock);
-	pr_err("\nafter read_unlcok get_gps_loc\n");
-	return &temp;
-}
-*/
-
-//TODO: Remove
-/*
-static int init_k_loc(void)
-{
-	if (__k_loc == NULL) {
-		__k_loc = kmalloc(sizeof(struct gps_location), GFP_KERNEL);
-		if (__k_loc == NULL) {
-			pr_err("init_k_loc: couldn't allocate __k_loc\n");
-			return -ENOMEM;
-		}
-	}
-
-	if (temp == NULL) {
-		temp = kmalloc(sizeof(struct gps_location), GFP_KERNEL);
-		if (temp == NULL) {
-			pr_err("init_k_loc: couldn't allocate temp\n");
-			return -ENOMEM;
-		}
-	}
-	
-	if (time == NULL) {
-		time =  kmalloc(sizeof(struct timeval), GFP_KERNEL);
-                if (time == NULL) {
-                        pr_err("init_k_loc: couldn't allocate time\n");
-                        return -ENOMEM;
-                }
-	}
-	return 1;
-}
-*/
 
 SYSCALL_DEFINE1(set_gps_location, struct gps_location __user *, loc)
 {
@@ -89,14 +29,6 @@ SYSCALL_DEFINE1(set_gps_location, struct gps_location __user *, loc)
 		pr_err("set_gps_location: loc is NULL.\n");
 		return -EINVAL;
 	}
-
-	//for debugging
-	/*
-	ret = init_k_loc();
-
-	if (ret != 1)
-		return ret;
-	*/
 
 	k_loc = kmalloc(sizeof(struct gps_location), GFP_KERNEL);
 	if (k_loc == NULL)
@@ -126,12 +58,12 @@ SYSCALL_DEFINE2(get_gps_location,
 		struct gps_location __user *, loc)
 {
 	struct gps_location *k_loc = NULL;
-//	char *k_path = NULL;
 	struct path st_path;
 	struct inode *inode = NULL;
 	struct ext3_inode_info *ei;
 	int path_len = 0;
 	int ret = 0;
+
 	if (loc == NULL) {
 		pr_err("get_gps_location: loc is NULL.\n");
 		return -EINVAL;
@@ -154,17 +86,6 @@ SYSCALL_DEFINE2(get_gps_location,
 		return -EINVAL;
 	}
 
-/*	k_path = kmalloc(path_len, GFP_KERNEL);
-	if (k_path == NULL)
-		return -ENOMEM;
-
-	if (copy_from_user(k_path, pathname, path_len)) {
-		pr_err("get_gps_location: copy_from_user failed for path.\n");
-		return -EFAULT;
-	}
-
-	pr_err("get_gps_location: pathname: %s, path_len: %d.\n",
-			k_path, path_len);*/
 	ret = user_path(pathname, &st_path);
 	if (ret) {
 		pr_err("\nerror occured while trying to get path %d", ret);
@@ -174,7 +95,7 @@ SYSCALL_DEFINE2(get_gps_location,
 
 	inode = st_path.dentry->d_inode;
 
-	if (inode->i_uid != current_uid() && inode->i_uid != current_euid()){
+	if (inode->i_uid != current_uid() && inode->i_uid != current_euid()) {
 		path_put(&st_path);
 		kfree(k_loc);
 		return -EPERM;
@@ -218,7 +139,7 @@ SYSCALL_DEFINE1(get_xxx, unsigned int, addr)
 
 	if (addr) {
 		ei = (struct ext3_inode_info *) addr;
-		
+
 		pr_err("Pointer is: 0x%x\n", (unsigned int)ei);
 		spin_lock(&ei->inode_gps_lock);
 

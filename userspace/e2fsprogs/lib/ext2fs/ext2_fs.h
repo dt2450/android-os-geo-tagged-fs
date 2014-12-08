@@ -59,7 +59,6 @@
 /*
  * The second extended file system magic number
  */
-//TODO: change this code?
 #define EXT3_SUPER_MAGIC	0xEF54
 #define EXT2_SUPER_MAGIC	EXT3_SUPER_MAGIC
 
@@ -376,7 +375,6 @@ struct ext4_new_group_input {
  * Structure of an inode on the disk
  */
 
-//TODO: add new fields here?
 struct ext2_inode {
 	__u16	i_mode;		/* File mode */
 	__u16	i_uid;		/* Low 16 bits of Owner Uid */
@@ -430,7 +428,6 @@ struct ext2_inode {
 /*
  * Permanent part of an large inode on the disk
  */
-//TODO: add new fields here?
 struct ext2_inode_large {
 	__u16	i_mode;		/* File mode */
 	__u16	i_uid;		/* Low 16 bits of Owner Uid */

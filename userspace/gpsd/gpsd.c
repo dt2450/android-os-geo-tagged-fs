@@ -9,7 +9,7 @@
 struct gps_location *get_file_data()
 {
 	struct gps_location *loc = NULL;
-	FILE* f = NULL;
+	FILE *f = NULL;
 	char *line = NULL;
 	ssize_t r;
 	size_t len = 0;
@@ -32,13 +32,17 @@ struct gps_location *get_file_data()
 
 	while ((r = getline(&line, &len, f)) != -1) {
 		switch (line_num) {
-		case 0:	lat = strtod(line, NULL);
+		case 0:
+			lat = strtod(line, NULL);
 			break;
-		case 1:	lon = strtod(line, NULL);
+		case 1:
+			lon = strtod(line, NULL);
 			break;
-		case 2:	acc = strtof(line, NULL);
+		case 2:
+			acc = strtof(line, NULL);
 			break;
-		default:printf("gpsd: unexpected GPS file format\n");
+		default:
+			printf("gpsd: unexpected GPS file format\n");
 			return NULL;
 		}
 		line_num++;
@@ -53,10 +57,10 @@ struct gps_location *get_file_data()
 	if (lat == -1 || lon == -1 || acc == -1) {
 		printf("gpsd: error reading GPS file value(s).\n");
 		return NULL;
-	} else {
-		printf("gpsd: lat: %f, lon: %f, acc: %f\n",
-				lat, lon, acc);
 	}
+
+	printf("gpsd: lat: %f, lon: %f, acc: %f\n",
+				lat, lon, acc);
 
 	loc->latitude = lat;
 	loc->longitude = lon;
@@ -98,7 +102,7 @@ int main(int argc, char *argv[])
 	//close(STDERR_FILENO);
 
 	printf("Begin reading GPS data ...\n\n");
-	while(1) {
+	while (1) {
 		loc = get_file_data();
 		if (loc == NULL) {
 			printf("gpsd: could not read GPS data.\n");
