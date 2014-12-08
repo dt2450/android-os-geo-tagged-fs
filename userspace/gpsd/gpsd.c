@@ -59,17 +59,20 @@ struct gps_location *get_file_data()
 		return NULL;
 	}
 
+	/*
 	printf("gpsd: lat: %f, lon: %f, acc: %f\n",
 				lat, lon, acc);
+	*/
 
 	loc->latitude = lat;
 	loc->longitude = lon;
 	loc->accuracy = acc;
-	//for debugging
+	/*
 	printf("gpsd: lat: %llx, lon: %llx, acc: %x\n",
 			*(unsigned long long *)&loc->latitude,
 			*(unsigned long long *)&loc->longitude,
 			*(unsigned int *)&loc->accuracy);
+	*/
 
 	return loc;
 }
@@ -97,9 +100,9 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	//close(STDIN_FILENO);
-	//close(STDOUT_FILENO);
-	//close(STDERR_FILENO);
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
+	close(STDERR_FILENO);
 
 	printf("Begin reading GPS data ...\n\n");
 	while (1) {
@@ -117,7 +120,7 @@ int main(int argc, char *argv[])
 		free(loc);
 
 		//for debugging
-		if (usleep(1000 * 1000 * 20) == -1) {
+		if (usleep(1000 * 1000 * 1) == -1) {
 			perror("gpsd: couldn't sleep.");
 			exit(EXIT_FAILURE);
 		}
