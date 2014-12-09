@@ -2927,10 +2927,10 @@ struct inode *ext3_iget(struct super_block *sb, unsigned long ino)
 	ei->i_state_flags = 0;
 	ei->i_dir_start_lookup = 0;
 	ei->i_dtime = le32_to_cpu(raw_inode->i_dtime);
-	ei->i_latitude = raw_inode->i_latitude;
-	ei->i_longitude = raw_inode->i_longitude;
-	ei->i_accuracy = raw_inode->i_accuracy;
-	ei->i_coord_age = raw_inode->i_coord_age;
+	ei->i_latitude = le64_to_cpu(raw_inode->i_latitude);
+	ei->i_longitude = le64_to_cpu(raw_inode->i_longitude);
+	ei->i_accuracy = le32_to_cpu(raw_inode->i_accuracy);
+	ei->i_coord_age = le32_to_cpu(raw_inode->i_coord_age);
 	/* We now have enough fields to check if the inode was active or not.
 	 * This is needed because nfsd might try to access dead inodes
 	 * the test is that same one that e2fsck uses
@@ -3126,10 +3126,10 @@ again:
 	raw_inode->i_fsize = ei->i_frag_size;
 #endif
 	raw_inode->i_file_acl = cpu_to_le32(ei->i_file_acl);
-	raw_inode->i_latitude = ei->i_latitude;
-	raw_inode->i_longitude = ei->i_longitude;
-	raw_inode->i_accuracy = ei->i_accuracy;
-	raw_inode->i_coord_age = ei->i_coord_age;
+	raw_inode->i_latitude = cpu_to_le64(ei->i_latitude);
+	raw_inode->i_longitude = cpu_to_le64(ei->i_longitude);
+	raw_inode->i_accuracy = cpu_to_le32(ei->i_accuracy);
+	raw_inode->i_coord_age = cpu_to_le32(ei->i_coord_age);
 
 	if (!S_ISREG(inode->i_mode)) {
 		raw_inode->i_dir_acl = cpu_to_le32(ei->i_dir_acl);

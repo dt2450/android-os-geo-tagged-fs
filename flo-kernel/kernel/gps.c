@@ -95,7 +95,7 @@ SYSCALL_DEFINE2(get_gps_location,
 
 	inode = st_path.dentry->d_inode;
 
-	if (inode->i_uid != current_uid() && inode->i_uid != current_euid()) {
+	if (inode_permission(inode, MAY_READ)) {
 		path_put(&st_path);
 		kfree(k_loc);
 		return -EPERM;
