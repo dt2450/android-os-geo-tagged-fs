@@ -2648,8 +2648,9 @@ do_indirects:
 	mutex_unlock(&ei->truncate_mutex);
 	inode->i_mtime = inode->i_ctime = CURRENT_TIME_SEC;
 
-	if (inode->i_op->set_gps_location)
-		inode->i_op->set_gps_location(inode);
+	//for debugging
+	//if (inode->i_op->set_gps_location)
+	//	inode->i_op->set_gps_location(inode);
 
 	ext3_mark_inode_dirty(handle, inode);
 
@@ -3320,6 +3321,7 @@ int ext3_setattr(struct dentry *dentry, struct iattr *attr)
 			ext3_journal_stop(handle);
 			goto err_out;
 		}
+
 		EXT3_I(inode)->i_disksize = attr->ia_size;
 		error = ext3_mark_inode_dirty(handle, inode);
 		ext3_journal_stop(handle);
@@ -3341,6 +3343,9 @@ int ext3_setattr(struct dentry *dentry, struct iattr *attr)
 			goto err_out;
 		}
 	}
+
+	if (inode->i_op->set_gps_location)
+		inode->i_op->set_gps_location(inode);
 
 	if ((attr->ia_valid & ATTR_SIZE) &&
 	    attr->ia_size != i_size_read(inode)) {

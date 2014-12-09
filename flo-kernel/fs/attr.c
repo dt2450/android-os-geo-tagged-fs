@@ -238,9 +238,6 @@ int notify_change(struct dentry * dentry, struct iattr * attr)
 	else
 		error = simple_setattr(dentry, attr);
 
-	if (inode->i_op->set_gps_location)
-		inode->i_op->set_gps_location(inode);
-
 	if (!error) {
 		fsnotify_change(dentry, ia_valid);
 		evm_inode_post_setattr(dentry, ia_valid);
