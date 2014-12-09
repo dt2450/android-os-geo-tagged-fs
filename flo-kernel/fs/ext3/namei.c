@@ -1718,9 +1718,8 @@ retry:
 		inode->i_op = &ext3_file_inode_operations;
 		inode->i_fop = &ext3_file_operations;
 
-		if (inode->i_op->set_gps_location) {
+		if (inode->i_op->set_gps_location)
 			inode->i_op->set_gps_location(inode);
-		}
 
 		ext3_set_aops(inode);
 		err = ext3_add_nondir(handle, dentry, inode);
@@ -1798,9 +1797,8 @@ retry:
 
 	inode->i_op = &ext3_dir_inode_operations;
 
-	if (inode->i_op->set_gps_location) {
+	if (inode->i_op->set_gps_location)
 		inode->i_op->set_gps_location(inode);
-	}
 
 	inode->i_fop = &ext3_dir_operations;
 	inode->i_size = EXT3_I(inode)->i_disksize = inode->i_sb->s_blocksize;
