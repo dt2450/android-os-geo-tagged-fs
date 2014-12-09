@@ -7,7 +7,6 @@
 #include <linux/list.h>
 #include <linux/namei.h>
 #include <linux/gps.h>
-//to be removed
 #include "../fs/ext3/ext3.h"
 
 DEFINE_SPINLOCK(gps_loc_lock);
@@ -110,10 +109,6 @@ SYSCALL_DEFINE2(get_gps_location,
 	}
 	ret = get_location_info(inode, k_loc);
 
-	pr_err("\n get_gps_loc_gps_SYSCALL_lat: %llx", *(__u64 *)&k_loc->latitude);
-	pr_err("\n get_gps_loc_gps_SYSCALL_lon: %llx", *(__u64 *)&k_loc->longitude);
-	pr_err("\n get_gps_loc_gps_SYSCALL_accu: %x", *(__u32 *)&k_loc->accuracy);
-
 	if (copy_to_user(loc, k_loc, sizeof(struct gps_location))) {
 		pr_err("get_gps_location: copy_to_user failed for loc.\n");
 		kfree(k_loc);
@@ -123,33 +118,4 @@ SYSCALL_DEFINE2(get_gps_location,
 	kfree(k_loc);
 	path_put(&st_path);
 	return ret;
-}
-
-SYSCALL_DEFINE1(get_xxx, unsigned int, addr)
-{
-	struct ext3_inode_info *ei = NULL;
-
-	spin_lock(&gps_loc_lock);
-	pr_err("\n get_xxx_lat: %llx", *(__u64 *)&__k_loc.latitude);
-	pr_err("\n get_xxx_lon: %llx", *(__u64
-				*)&__k_loc.longitude);
-	pr_err("\n get_xxx_accu: %x", *(__u32
-				*)&__k_loc.accuracy);
-	spin_unlock(&gps_loc_lock);
-
-	if (addr) {
-		ei = (struct ext3_inode_info *) addr;
-
-		pr_err("Pointer is: 0x%x\n", (unsigned int)ei);
-		spin_lock(&ei->inode_gps_lock);
-
-		pr_err("\n 1. ext3_set_gps_location_lat::: %llx", ei->i_latitude);
-		pr_err("\n 1. ext3_set_gps_location_lon::: %llx", ei->i_longitude);
-		pr_err("\n 1. ext3_set_gps_location_accu::: %x", ei->i_accuracy);
-		pr_err("\n 1. ext3_set_gps_location_age::: %x", ei->i_coord_age);
-		pr_err("\n ext3_inode_info = 0x%x\n", (unsigned int)ei);
-		spin_unlock(&ei->inode_gps_lock);
-	}
-
-	return 0;
 }

@@ -2648,10 +2648,6 @@ do_indirects:
 	mutex_unlock(&ei->truncate_mutex);
 	inode->i_mtime = inode->i_ctime = CURRENT_TIME_SEC;
 
-	//for debugging
-	//if (inode->i_op->set_gps_location)
-	//	inode->i_op->set_gps_location(inode);
-
 	ext3_mark_inode_dirty(handle, inode);
 
 	/*

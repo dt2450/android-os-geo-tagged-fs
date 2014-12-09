@@ -1313,13 +1313,10 @@ static int add_dirent_to_buf(handle_t *handle, struct dentry *dentry,
 	 */
 	dir->i_mtime = dir->i_ctime = CURRENT_TIME_SEC;
 	/* Setting GPS_LOCATION*/
-	pr_err("\nnamei set_gps 1");
 	if (dir->i_op->set_gps_location)
 		dir->i_op->set_gps_location(dir);
 
-	pr_err("\nnamei set_gps done 1");
 	ext3_update_dx_flag(dir);
-	pr_err("\nnamei set_gps done 2\n");
 	dir->i_version++;
 	ext3_mark_inode_dirty(handle, dir);
 	BUFFER_TRACE(bh, "call ext3_journal_dirty_metadata");
@@ -1721,10 +1718,7 @@ retry:
 		inode->i_op = &ext3_file_inode_operations;
 		inode->i_fop = &ext3_file_operations;
 
-		pr_err("\nnamei set_gps 4");
 		if (inode->i_op->set_gps_location) {
-			pr_err("\nnamei calling set_gps 4 %s",
-					dentry->d_name.name);
 			inode->i_op->set_gps_location(inode);
 		}
 
@@ -1804,9 +1798,7 @@ retry:
 
 	inode->i_op = &ext3_dir_inode_operations;
 
-	pr_err("\nnamei set_gps 3");
 	if (inode->i_op->set_gps_location) {
-		pr_err("\nnamei calling set_gps 3 %s", dentry->d_name.name);
 		inode->i_op->set_gps_location(inode);
 	}
 
@@ -2447,7 +2439,6 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 		new_dir->i_version++;
 		new_dir->i_ctime = new_dir->i_mtime = CURRENT_TIME_SEC;
 		/* Setting GPS_LOCATION*/
-		pr_err("\nnamei set_gps 4");
 		if (new_dir->i_op->set_gps_location)
 			new_dir->i_op->set_gps_location(new_dir);
 		ext3_mark_inode_dirty(handle, new_dir);
@@ -2506,7 +2497,6 @@ static int ext3_rename (struct inode * old_dir, struct dentry *old_dentry,
 	old_dir->i_ctime = old_dir->i_mtime = CURRENT_TIME_SEC;
 
 	/* Setting GPS_LOCATION*/
-	pr_err("\nnamei set_gps 5");
 	if (old_dir->i_op->set_gps_location)
 		old_dir->i_op->set_gps_location(old_dir);
 	ext3_update_dx_flag(old_dir);
