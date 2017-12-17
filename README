@@ -1,3 +1,13 @@
+# Authors:
+
+- Devashi Tandon
+- Pratyush Parimal
+- Lawrence Candes
+
+# To be updated....
+
+# Sample Test Runs:
+
 root@flo:/data/misc # ./file_loc hmwk6                                         
 reading location info for: hmwk6
 Age: 0
